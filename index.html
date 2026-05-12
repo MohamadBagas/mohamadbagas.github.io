@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My App Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0b0c10;
+      --surface: #13151c;
+      --border: #1f2230;
+      --accent: #f0c040;
+      --accent2: #3de0c0;
+      --text: #e8eaf0;
+      --muted: #6b7194;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      background: rgba(11,12,16,.7);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.1rem;
+      letter-spacing: .05em;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .9rem;
+      letter-spacing: .04em;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 6rem 2.5rem 4rem;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: .4;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+    }
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(240,192,64,.12) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; max-width: 780px; }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .75rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+    }
+    .hero-tag span {
+      width: 24px; height: 1px; background: var(--accent); display: inline-block;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2.8rem, 8vw, 6rem);
+      font-weight: 800;
+      line-height: 1.0;
+      letter-spacing: -.02em;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+    .hero p {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.75;
+      margin-bottom: 2.5rem;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: .75rem;
+      padding: .85rem 2rem;
+      background: var(--accent);
+      color: #0b0c10;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: .9rem;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: opacity .2s, transform .2s;
+    }
+    .hero-cta:hover { opacity: .85; transform: translateY(-2px); }
+    .hero-cta svg { width: 16px; height: 16px; }
+
+    /* ── Section ── */
+    section { position: relative; padding: 6rem 2.5rem; max-width: 1200px; margin: 0 auto; }
+    .section-label {
+      display: flex; align-items: center; gap: 1rem;
+      font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent2); margin-bottom: 1rem;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      margin-bottom: 3.5rem;
+    }
+
+    /* ── App Cards ── */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .app-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .3s, transform .3s;
+      animation: fadeUp .6s both;
+    }
+    .app-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+    .app-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .app-card:hover::before { opacity: 1; }
+    .card-number {
+      font-family: var(--font-head);
+      font-size: .7rem;
+      letter-spacing: .15em;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+    .card-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+      background: rgba(255,255,255,.05);
+    }
+    .card-title {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .6rem;
+    }
+    .card-desc {
+      font-size: .875rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+      margin-bottom: 1.5rem;
+    }
+    .tag {
+      font-size: .7rem; letter-spacing: .06em;
+      padding: .2rem .65rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+    }
+    .card-status {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .75rem; color: var(--muted);
+    }
+    .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .dot.coming { background: var(--muted); }
+    .dot.active { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+    .dot.wip { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+    /* ── About ── */
+    .about-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      font-size: .95rem;
+    }
+    .about-text a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 400;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    .stat-num {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+    .stat-label {
+      font-size: .8rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+    }
+
+    /* ── Contact ── */
+    .contact-inner {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem;
+      background: var(--surface);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 2rem;
+    }
+    .contact-inner h3 {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: .5rem;
+    }
+    .contact-inner p { color: var(--muted); font-size: .9rem; }
+    .contact-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .contact-link {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .7rem 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: .85rem;
+      transition: border-color .2s, background .2s;
+    }
+    .contact-link:hover {
+      border-color: var(--accent);
+      background: rgba(240,192,64,.07);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: .8rem;
+      letter-spacing: .05em;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .app-card:nth-child(1) { animation-delay: .05s; }
+    .app-card:nth-child(2) { animation-delay: .12s; }
+    .app-card:nth-child(3) { animation-delay: .19s; }
+    .app-card:nth-child(4) { animation-delay: .26s; }
+    .app-card:nth-child(5) { animation-delay: .33s; }
+    .app-card:nth-child(6) { animation-delay: .40s; }
+
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { gap: 1.2rem; }
+      .hero, section { padding-left: 1.2rem; padding-right: 1.2rem; }
+      .about-inner { grid-template-columns: 1fr; }
+      .contact-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <!-- ✏️ Ganti "MyApps" dengan nama/brand kamu -->
+  <div class="nav-logo">MyApps ✦</div>
+  <div class="nav-links">
+    <a href="#apps">Aplikasi</a>
+    <a href="#about">Tentang</a>
+    <a href="#contact">Kontak</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag"><span></span> App Portfolio</div>
+    <!-- ✏️ Ganti nama & deskripsi kamu di bawah ini -->
+    <h1>Halo, Saya <em>Nama Kamu</em></h1>
+    <p>Ini adalah kumpulan aplikasi dan proyek yang sedang dan akan saya kembangkan. Tiap proyek adalah langkah baru dalam perjalanan belajar saya.</p>
+    <a href="#apps" class="hero-cta">
+      Lihat Aplikasi
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 8h10M9 4l4 4-4 4"/>
+      </svg>
+    </a>
+  </div>
+</div>
+
+<!-- ── APPS ── -->
+<section id="apps">
+  <div class="section-label">Proyek</div>
+  <h2 class="section-title">Aplikasi Saya</h2>
+
+  <div class="apps-grid">
+
+    <!-- ✏️ CARD 1 — Edit sesuai aplikasimu -->
+    <div class="app-card">
+      <div class="card-number">01</div>
+      <div class="card-icon">🌤️</div>
+      <div class="card-title">Nama Aplikasi 1</div>
+      <p class="card-desc">Deskripsi singkat aplikasi ini. Apa yang dilakukannya dan untuk siapa aplikasi ini dibuat.</p>
+      <div class="card-tags">
+        <span class="tag">HTML</span>
+        <span class="tag">CSS</span>
+        <span class="tag">JavaScript</span>
+      </div>
+      <div class="card-status">
+        <span class="dot wip"></span> Sedang dikembangkan
+      </div>
+    </div>
+
+    <!-- ✏️ CARD 2 -->
+    <div class="app-card">
+      <div class="card-number">02</div>
+      <div class="card-icon">📋</div>
+      <div class="card-title">Nama Aplikasi 2</div>
+      <p class="card-desc">Deskripsi singkat aplikasi ini. Apa yang dilakukannya dan untuk siapa aplikasi ini dibuat.</p>
+      <div class="card-tags">
+        <span class="tag">React</span>
+        <span class="tag">Firebase</span>
+      </div>
+      <div class="card-status">
+        <span class="dot active"></span> Sudah live
+      </div>
+    </div>
+
+    <!-- ✏️ CARD 3 -->
+    <div class="app-card">
+      <div class="card-number">03</div>
+      <div class="card-icon">🗺️</div>
+      <div class="card-title">Nama Aplikasi 3</div>
+      <p class="card-desc">Deskripsi singkat aplikasi ini. Apa yang dilakukannya dan untuk siapa aplikasi ini dibuat.</p>
+      <div class="card-tags">
+        <span class="tag">Python</span>
+        <span class="tag">API</span>
+      </div>
+      <div class="card-status">
+        <span class="dot coming"></span> Segera hadir
+      </div>
+    </div>
+
+    <!-- ✏️ Tambah card baru dengan duplikat blok di atas -->
+
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="section-label">Tentang</div>
+  <h2 class="section-title">Siapa Saya</h2>
+  <div class="about-inner">
+    <div class="about-text">
+      <!-- ✏️ Ganti teks di bawah dengan cerita kamu -->
+      <p>Halo! Saya sedang belajar membuat aplikasi dari nol. Halaman ini adalah tempat saya mendokumentasikan perjalanan dan proyek-proyek yang saya bangun.</p>
+      <p>Saya percaya bahwa belajar terbaik adalah dengan langsung membuat sesuatu. Setiap aplikasi di sini adalah bukti nyata dari apa yang sudah saya pelajari.</p>
+      <p>Jangan ragu untuk <a href="#contact">menghubungi saya</a> jika ingin berkolaborasi atau sekadar menyapa!</p>
+    </div>
+    <div class="stats-grid">
+      <!-- ✏️ Ganti angka sesuai kenyataan -->
+      <div class="stat-card">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Proyek Aktif</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">1</div>
+        <div class="stat-label">Sudah Live</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2024</div>
+        <div class="stat-label">Mulai Belajar</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Semangat Belajar</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-inner">
+    <div>
+      <h3>Mari Terhubung 👋</h3>
+      <!-- ✏️ Ganti teks -->
+      <p>Punya ide proyek atau ingin berkolaborasi? Hubungi saya!</p>
+    </div>
+    <div class="contact-links">
+      <!-- ✏️ Ganti link dengan profil kamu -->
+      <a href="https://github.com/USERNAME_GITHUB_KAMU" class="contact-link" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        GitHub
+      </a>
+      <!-- ✏️ Ganti dengan email kamu -->
+      <a href="mailto:email@kamu.com" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+          <polyline points="22,6 12,13 2,6"/>
+        </svg>
+        Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <!-- ✏️ Ganti nama -->
+  Dibuat dengan ♥ oleh Nama Kamu · Powered by GitHub Pages
+</footer>
+
+</body>
+</html>
